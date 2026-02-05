@@ -2,27 +2,43 @@ Hooks.once("ready", () => {
     console.log("Armor Weight Reducer | Active");
     
     // Register module settings
-    game.settings.register("armor-weight-reducer", "armorTypes", {
-        name: "Armor Types",
-        hint: "Which armor types to modify (comma-separated: light, medium, heavy, shield)",
-        scope: "world",
-        config: true,
-        type: String,
-        default: "light,medium,heavy,shield"
-    });
+    const armorTypes = ["light", "medium", "heavy", "shield"];
+    const armorLabels = {
+        "light": "Light Armor",
+        "medium": "Medium Armor",
+        "heavy": "Heavy Armor",
+        "shield": "Shields"
+    };
     
-    game.settings.register("armor-weight-reducer", "weightMultiplier", {
-        name: "Weight Multiplier",
-        hint: "Multiply equipped armor weight by this value. 0.5 = half weight, 0.25 = quarter weight, 0 = no weight.",
+    game.settings.register("armor-weight-reducer", "defaultMultiplier", {
+        name: "Default Weight Multiplier",
+        hint: "Default multiplier for all armor types. Set to -1 to disable a type entirely.",
         scope: "world",
         config: true,
         type: Number,
         range: {
-            min: 0,
+            min: -1,
             max: 1,
             step: 0.05
         },
         default: 0.5
+    });
+    
+    // Register individual armor type multipliers
+    armorTypes.forEach(type => {
+        game.settings.register("armor-weight-reducer", `${type}Multiplier`, {
+            name: `${armorLabels[type]} Multiplier`,
+            hint: "Override default multiplier for this type. Set to -1 to use default.",
+            scope: "world",
+            config: true,
+            type: Number,
+            range: {
+                min: -1,
+                max: 1,
+                step: 0.05
+            },
+            default: -1
+        });
     });
     
     Hooks.on("updateItem", async (item, changes, options, userId) => {
@@ -30,15 +46,20 @@ Hooks.once("ready", () => {
         if (item.type !== "equipment") return;
         if (options.skipWeightHook) return;
         
-        // Check if this armor type is enabled
         const armorType = item.system.type?.value;
-        const enabledTypes = game.settings.get("armor-weight-reducer", "armorTypes")
-            .split(",")
-            .map(t => t.trim());
+        if (!armorType) return;
         
-        if (!enabledTypes.includes(armorType)) return;
+        // Get multiplier for this armor type
+        let weightMultiplier = game.settings.get("armor-weight-reducer", `${armorType}Multiplier`);
         
-        const weightMultiplier = game.settings.get("armor-weight-reducer", "weightMultiplier");
+        // If set to -1, use default
+        if (weightMultiplier === -1) {
+            weightMultiplier = game.settings.get("armor-weight-reducer", "defaultMultiplier");
+        }
+        
+        // If still -1 (default is disabled), skip this type
+        if (weightMultiplier === -1) return;
+        
         const originalWeight = item.getFlag("armor-weight-reducer", "originalWeight");
         
         // When armor is equipped
