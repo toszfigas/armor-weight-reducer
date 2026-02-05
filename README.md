@@ -11,4 +11,4 @@ https://github.com/toszfigas/armor-weight-reducer/releases/latest/download/modul
 
 ## Usage
 
-Simply equip armor and the weight will be automatically halved. Unequip to restore original weight.
+Simply equip armor and the weight will be automatically changed. Unequip to restore original weight.
