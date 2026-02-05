@@ -2,7 +2,7 @@
   "id": "armor-weight-reducer",
   "title": "Armor Weight Reducer",
   "description": "For times when you're using variant encumbrance rules but don't want to punish martials for wearing heavy armor.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "authors": [
     {
       "name": "Bartosz Figas"
