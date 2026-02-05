@@ -2,7 +2,7 @@ Hooks.once("ready", () => {
     console.log("Armor Weight Reducer | Active");
     
     Hooks.on("updateItem", async (item, changes, options, userId) => {
-        const armorTypes = ["light", "medium", "heavy", "shield"];
+        const armorTypes = ["light", "medium", "heavy"];
         
         if (item.type !== "equipment" || !armorTypes.includes(item.system.type?.value)) return;
         if (options.skipWeightHook) return;
