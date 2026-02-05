@@ -1,11 +1,11 @@
 {
   "id": "armor-weight-reducer",
   "title": "Armor Weight Reducer",
-  "description": "Automatically halves the weight of equipped armor in D&D 5e",
-  "version": "1.0.2",
+  "description": "For times when you're using variant encumbrance rules but don't want to punish martials for wearing heavy armor.",
+  "version": "1.0.3",
   "authors": [
     {
-      "name": "toszfigas"
+      "name": "Bartosz Figas"
     }
   ],
   "compatibility": {
